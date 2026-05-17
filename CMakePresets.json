@@ -88,6 +88,10 @@
     {
       "name": "apple-silicon-debug",
       "configurePreset": "apple-silicon-debug"
+    },
+    {
+      "name": "apple-universal-debug",
+      "configurePreset": "apple-universal-debug"
     }
   ],
   "testPresets": [
@@ -115,6 +119,13 @@
     {
       "name": "apple-silicon-debug",
       "configurePreset": "apple-silicon-debug",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
+    {
+      "name": "apple-universal-debug",
+      "configurePreset": "apple-universal-debug",
       "output": {
         "outputOnFailure": true
       }
