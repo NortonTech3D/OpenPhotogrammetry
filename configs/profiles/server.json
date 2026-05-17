@@ -4,5 +4,9 @@
   "compute_backend_priority": ["cuda", "cpu"],
   "max_parallel_jobs": "max",
   "image_cache_gb": 32,
-  "dense_reconstruction_quality": "high"
+  "dense_reconstruction_quality": "high",
+  "fail_fast_quality_gates": true,
+  "sparse_matching_strategy": "adaptive",
+  "dense_confidence_filtering": "aggressive",
+  "qa_report_level": "detailed"
 }

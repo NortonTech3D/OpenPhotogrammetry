@@ -5,5 +5,9 @@
   "max_parallel_jobs": "auto",
   "image_cache_gb": 6,
   "dense_reconstruction_quality": "balanced",
-  "unified_memory_mode": true
+  "unified_memory_mode": true,
+  "fail_fast_quality_gates": true,
+  "sparse_matching_strategy": "adaptive",
+  "dense_confidence_filtering": "enabled",
+  "qa_report_level": "standard"
 }
