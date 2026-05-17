@@ -1,3 +1,22 @@
 # pipelines/object-scan
 
-Placeholder for pipelines/object-scan module contents.
+Close-range, high-detail workflow profile for turntable and multi-orbit capture.
+
+## Dataset assumptions
+
+- High overlap, short baseline arcs around an object
+- Controlled lighting preferred, fixed or grouped intrinsics expected
+- Scale constraints from known object dimensions when available
+
+## Execution behavior
+
+- Prioritize high-detail sparse tracks and dense depth quality
+- Prefer sequential + vocabulary-tree matching for looped/object-centric capture
+- Use stricter blur and duplicate filtering to protect fine geometry
+- Require dense confidence gate pass before meshing/texturing handoff
+
+## Quality focus
+
+- Tight reprojection limits for sub-centimeter object fidelity
+- Uniform point density around silhouettes and concavities
+- Texture completeness and seam cleanliness suitable for asset export
