@@ -94,3 +94,18 @@ The orchestration policy follows established patterns from proven projects:
 2. **Phase 2**: dense reconstruction + confidence filtering + dense QA gates
 3. **Phase 3**: meshing/texturing integration + benchmark validation on
    reference datasets
+
+## Phase exit criteria
+
+- **Phase 1 exit**: sparse QA KPIs pass on reference object-scan and aerial sets
+- **Phase 2 exit**: dense QA gate passes with acceptable hole/outlier rates on
+  the same reference sets
+- **Phase 3 exit**: end-to-end benchmarks meet geometric and texture KPIs with
+  reproducible manifests and QA reports
+
+## Profile default rationale
+
+- `desktop` and `apple-silicon` use `dense_confidence_filtering=enabled` to
+  preserve detail for interactive/local review workflows
+- `server` uses `dense_confidence_filtering=aggressive` to prioritize robust
+  automated batch throughput on large and potentially noisier datasets
