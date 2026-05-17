@@ -1,0 +1,8 @@
+{
+  "name": "desktop",
+  "description": "Balanced defaults for local workstation workflows.",
+  "compute_backend_priority": ["cuda", "metal", "cpu"],
+  "max_parallel_jobs": "auto",
+  "image_cache_gb": 8,
+  "dense_reconstruction_quality": "high"
+}
