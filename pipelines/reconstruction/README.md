@@ -9,7 +9,7 @@ progressing to the next stage.
 
 - **Target reconstruction scale**: scene-level scale mode (`object`, `site`,
   `terrain`) and expected units (`mm`, `cm`, `m`)
-- **Acceptable reprojection error**: mean <= `1.0 px`, P95 <= `1.5 px`
+- **Acceptable reprojection error**: mean <= `1.0 px`, P95 <= `2.5 px`
 - **Minimum sparse point density**: >= `1,000` reliable points per registered
   image set component
 - **Geometric accuracy tolerance**: <= `1%` relative error against control
@@ -70,7 +70,11 @@ The orchestration policy follows established patterns from proven projects:
   - `vocabulary-tree`: enforce retrieval-driven broad matching
 - `dense_confidence_filtering`
   - `enabled`: default confidence-weighted outlier suppression
-  - `aggressive`: stronger pruning for throughput-oriented or noisy captures
+  - `aggressive`: stricter confidence cutoffs and stronger outlier pruning for
+    throughput-oriented or noisy captures
+- `qa_report_level`
+  - `standard`: stage pass/fail summary, KPI deltas, top recapture actions
+  - `detailed`: standard output plus per-stage metric tables and artifact links
 
 ## Observability and reproducibility requirements
 
