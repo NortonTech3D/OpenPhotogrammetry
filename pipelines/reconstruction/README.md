@@ -51,6 +51,8 @@ The orchestration policy follows established patterns from proven projects:
 
 - Enforce camera/lens grouping and calibration strategy per dataset category
 - Select matching strategy by capture pattern:
+  - Adaptive: policy engine chooses sequential/spatial/vocabulary-tree per
+    capture metadata and coverage diagnostics
   - Sequential: video/ordered trajectory captures
   - Spatial: geo-aware aerial/site captures
   - Vocabulary-tree: unordered large image sets
@@ -58,6 +60,17 @@ The orchestration policy follows established patterns from proven projects:
 - Apply scale/georeference constraints when available (GCPs, known distances,
   GNSS priors)
 - Persist uncertainty/confidence signals across sparse and dense outputs
+
+## Profile policy field definitions
+
+- `sparse_matching_strategy`
+  - `adaptive`: automatically select sequential/spatial/vocabulary-tree
+  - `sequential`: enforce ordered-neighbor matching
+  - `spatial`: enforce geo/spatial-neighbor matching
+  - `vocabulary-tree`: enforce retrieval-driven broad matching
+- `dense_confidence_filtering`
+  - `enabled`: default confidence-weighted outlier suppression
+  - `aggressive`: stronger pruning for throughput-oriented or noisy captures
 
 ## Observability and reproducibility requirements
 
