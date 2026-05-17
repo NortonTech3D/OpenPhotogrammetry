@@ -1,0 +1,9 @@
+{
+  "name": "apple-silicon",
+  "description": "Apple Silicon defaults tuned for unified memory and Metal acceleration.",
+  "compute_backend_priority": ["metal", "cpu"],
+  "max_parallel_jobs": "auto",
+  "image_cache_gb": 6,
+  "dense_reconstruction_quality": "balanced",
+  "unified_memory_mode": true
+}

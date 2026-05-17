@@ -1,0 +1,8 @@
+{
+  "name": "server",
+  "description": "Throughput-focused defaults for dedicated reconstruction servers.",
+  "compute_backend_priority": ["cuda", "cpu"],
+  "max_parallel_jobs": "max",
+  "image_cache_gb": 32,
+  "dense_reconstruction_quality": "high"
+}
