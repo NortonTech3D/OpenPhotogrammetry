@@ -40,4 +40,44 @@ jobs:
         run: cmake --build --preset ${{ matrix.preset }}
 
       - name: Test
-        run: ctest --preset ${{ matrix.preset }} --no-tests=error
+        run: ctest --preset ${{ matrix.preset }} --output-on-failure --no-tests=error
+
+      - name: Acceptance criteria gate
+        run: ctest --preset ${{ matrix.preset }} --output-on-failure --no-tests=error -R "^(unit|integration|regression)\\."
+
+      - name: Upload CTest logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ctest-${{ matrix.os }}-${{ matrix.preset }}
+          path: build/${{ matrix.preset }}/Testing/**
+          if-no-files-found: ignore
+
+  quality-gates-linux:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Ninja
+        uses: seanmiddleditch/gha-setup-ninja@v5
+
+      - name: Setup CMake
+        uses: jwlawson/actions-setup-cmake@v2
+
+      - name: Configure ASan/UBSan
+        run: cmake --preset linux-asan
+
+      - name: Build ASan/UBSan
+        run: cmake --build --preset linux-asan
+
+      - name: Test ASan/UBSan
+        run: ctest --preset linux-asan --output-on-failure --no-tests=error
+
+      - name: Upload sanitizer logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ctest-linux-asan
+          path: build/linux-asan/Testing/**
+          if-no-files-found: ignore
