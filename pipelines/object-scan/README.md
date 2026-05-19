@@ -16,6 +16,8 @@ Close-range, high-detail workflow profile for turntable and multi-orbit capture.
 - Require dense confidence gate pass before meshing/texturing handoff
 - Optional `--live-scan` mode enables active model growth while the object or
   scanner moves; default mode remains offline batch scanning
+- In `--live-scan` mode, the pipeline also requires a viable feature budget to
+  support incremental model updates during motion
 
 ## Quality focus
 
