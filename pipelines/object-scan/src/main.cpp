@@ -13,7 +13,7 @@ int main(int argc, char** argv) {
       live_scan_enabled = true;
     }
     else {
-      std::cerr << "unsupported option: " << arg << '\n';
+      std::cerr << "unknown option: " << arg << ". valid options: --live-scan\n";
       return 2;
     }
   }
