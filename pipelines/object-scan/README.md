@@ -14,6 +14,8 @@ Close-range, high-detail workflow profile for turntable and multi-orbit capture.
 - Prefer sequential + vocabulary-tree matching for looped/object-centric capture
 - Use stricter blur and duplicate filtering to protect fine geometry
 - Require dense confidence gate pass before meshing/texturing handoff
+- Optional `--live-scan` mode enables active model growth while the object or
+  scanner moves; default mode remains offline batch scanning
 
 ## Quality focus
 

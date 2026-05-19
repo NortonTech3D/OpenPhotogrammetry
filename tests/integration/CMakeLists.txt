@@ -27,3 +27,8 @@ add_test(
   NAME integration.object_scan_pipeline_self_check
   COMMAND $<TARGET_FILE:op_pipeline_object_scan>
 )
+
+add_test(
+  NAME integration.object_scan_pipeline_live_scan_self_check
+  COMMAND $<TARGET_FILE:op_pipeline_object_scan> --live-scan
+)
