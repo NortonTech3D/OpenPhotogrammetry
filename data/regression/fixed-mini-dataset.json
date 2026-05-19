@@ -1,0 +1,7 @@
+{
+  "schema": "op-regression-dataset-v1",
+  "name": "fixed-mini-dataset",
+  "image_count": 8,
+  "coordinate_system": "EPSG:4326",
+  "description": "Minimal fixed dataset contract for regression checks."
+}

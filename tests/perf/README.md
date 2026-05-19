@@ -1,3 +1,7 @@
 # tests/perf
 
-Placeholder for tests/perf module contents.
+Performance smoke checks provide lightweight early warning for severe runtime regressions.
+
+Current check:
+
+- `perf.feature_budget_smoke`
