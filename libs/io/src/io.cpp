@@ -69,11 +69,16 @@ bool extract_json_int(std::string_view json, std::string_view key, int* out) {
   }
 
   std::size_t value_end = value_start;
-  while (value_end < json.size() && ((json[value_end] >= '0' && json[value_end] <= '9') || json[value_end] == '-')) {
+  if (value_end < json.size() && json[value_end] == '-') {
     ++value_end;
   }
 
-  if (value_end == value_start) {
+  const std::size_t digits_start = value_end;
+  while (value_end < json.size() && (json[value_end] >= '0' && json[value_end] <= '9')) {
+    ++value_end;
+  }
+
+  if (value_end == digits_start) {
     return false;
   }
 
@@ -159,10 +164,6 @@ bool extract_json_string_array(std::string_view json, std::string_view key, std:
     cursor = second_quote + 1;
   }
 
-  if (values.empty()) {
-    return false;
-  }
-
   if (out != nullptr) {
     *out = std::move(values);
   }
@@ -178,6 +179,10 @@ bool value_in(std::string_view value, std::initializer_list<std::string_view> al
   }
   return false;
 }
+
+inline constexpr std::uint64_t kFnv1aOffsetBasis = 14695981039346656037ULL;
+inline constexpr std::uint64_t kFnv1aPrime = 1099511628211ULL;
+inline constexpr double kQaStagePassThreshold = 0.75;
 
 std::string_view failure_name(op::io::FailureClassification failure) {
   switch (failure) {
@@ -368,7 +373,8 @@ bool validate_profile_contract_json(std::string_view json, std::string* error) {
                                "fail_fast_quality_gates",
                                "sparse_matching_strategy",
                                "dense_confidence_filtering",
-                               "qa_report_level"}) {
+                               "qa_report_level",
+                               "runtime_budget_ms"}) {
     if (!contains_required_key(json, key)) {
       set_error(error, "profile contract is missing required key");
       return false;
@@ -384,6 +390,7 @@ bool validate_profile_contract_json(std::string_view json, std::string* error) {
   std::string sparse_matching;
   std::string dense_filtering;
   std::string qa_report_level;
+  int runtime_budget_ms = 0;
 
   if (!extract_json_string(json, "name", &name) || name.empty()) {
     set_error(error, "profile name is invalid");
@@ -435,11 +442,30 @@ bool validate_profile_contract_json(std::string_view json, std::string* error) {
     return false;
   }
 
+  if (!extract_json_int(json, "runtime_budget_ms", &runtime_budget_ms) || runtime_budget_ms <= 0) {
+    set_error(error, "runtime_budget_ms is invalid");
+    return false;
+  }
+
   if (contains_required_key(json, "unified_memory_mode")) {
     bool unified_memory_mode = false;
     if (!extract_json_bool(json, "unified_memory_mode", &unified_memory_mode)) {
       set_error(error, "unified_memory_mode must be a boolean");
       return false;
+    }
+
+    if (unified_memory_mode) {
+      bool has_metal_backend = false;
+      for (const std::string& backend : backend_priority) {
+        if (backend == "metal") {
+          has_metal_backend = true;
+          break;
+        }
+      }
+      if (!has_metal_backend) {
+        set_error(error, "unified_memory_mode requires a metal backend");
+        return false;
+      }
     }
   }
 
@@ -476,6 +502,7 @@ bool load_profile_contract(std::string_view path, ProfileContract* profile, std:
   extract_json_string(content, "sparse_matching_strategy", &profile->sparse_matching_strategy);
   extract_json_string(content, "dense_confidence_filtering", &profile->dense_confidence_filtering);
   extract_json_string(content, "qa_report_level", &profile->qa_report_level);
+  extract_json_int(content, "runtime_budget_ms", &profile->runtime_budget_ms);
 
   bool unified_memory_mode = false;
   if (extract_json_bool(content, "unified_memory_mode", &unified_memory_mode)) {
@@ -502,6 +529,7 @@ bool profile_contract_defaults(std::string_view profile_name, ProfileContract* p
       .sparse_matching_strategy = "adaptive",
       .dense_confidence_filtering = "enabled",
       .qa_report_level = "standard",
+      .runtime_budget_ms = 600000,
       .unified_memory_mode = false,
     };
     return true;
@@ -518,6 +546,7 @@ bool profile_contract_defaults(std::string_view profile_name, ProfileContract* p
       .sparse_matching_strategy = "adaptive",
       .dense_confidence_filtering = "aggressive",
       .qa_report_level = "detailed",
+      .runtime_budget_ms = 900000,
       .unified_memory_mode = false,
     };
     return true;
@@ -534,6 +563,7 @@ bool profile_contract_defaults(std::string_view profile_name, ProfileContract* p
       .sparse_matching_strategy = "adaptive",
       .dense_confidence_filtering = "enabled",
       .qa_report_level = "standard",
+      .runtime_budget_ms = 720000,
       .unified_memory_mode = true,
     };
     return true;
@@ -599,10 +629,10 @@ std::vector<PipelineStage> reconstruction_stage_graph() {
 }
 
 std::uint64_t fnv1a_checksum(std::string_view value) {
-  std::uint64_t hash = 14695981039346656037ULL;
+  std::uint64_t hash = kFnv1aOffsetBasis;
   for (const unsigned char c : value) {
     hash ^= static_cast<std::uint64_t>(c);
-    hash *= 1099511628211ULL;
+    hash *= kFnv1aPrime;
   }
   return hash;
 }
@@ -663,6 +693,7 @@ StageExecutionResult execute_reconstruction_stage_graph(const StageExecutionOpti
     result.checkpoints.push_back(std::move(checkpoint));
   }
 
+  bool has_failure = false;
   for (std::size_t i = start_index; i < graph.size(); ++i) {
     const PipelineStage stage = graph[i];
     StageCheckpoint checkpoint;
@@ -686,7 +717,8 @@ StageExecutionResult execute_reconstruction_stage_graph(const StageExecutionOpti
         failure = FailureClassification::resource_exhaustion;
       }
 
-      if ((stage == PipelineStage::sparse_qa || stage == PipelineStage::dense_qa) && observation.qa_metric < 0.75) {
+      if ((stage == PipelineStage::sparse_qa || stage == PipelineStage::dense_qa)
+          && observation.qa_metric < kQaStagePassThreshold) {
         success = false;
         if (failure == FailureClassification::none) {
           failure = FailureClassification::data_quality;
@@ -710,18 +742,25 @@ StageExecutionResult execute_reconstruction_stage_graph(const StageExecutionOpti
     result.checkpoints.push_back(checkpoint);
 
     if (!checkpoint.completed) {
-      result.terminal_failure = checkpoint.failure;
-      result.failed_stage = std::string(pipeline_stage_name(stage));
-      result.success = false;
-      if (options.fail_fast_quality_gates || stage == PipelineStage::sparse_qa || stage == PipelineStage::dense_qa) {
+      if (!has_failure) {
+        result.terminal_failure = checkpoint.failure;
+        result.failed_stage = std::string(pipeline_stage_name(stage));
+      }
+      has_failure = true;
+      if (options.fail_fast_quality_gates) {
         return result;
       }
     }
   }
 
-  result.success = true;
-  result.terminal_failure = FailureClassification::none;
-  result.failed_stage.clear();
+  if (!has_failure) {
+    result.success = true;
+    result.terminal_failure = FailureClassification::none;
+    result.failed_stage.clear();
+  }
+  else {
+    result.success = false;
+  }
   return result;
 }
 
@@ -783,13 +822,8 @@ bool write_stage_execution_manifest(std::string_view path, const StageExecutionR
   std::error_code ec;
   std::filesystem::rename(temp_path, output_path, ec);
   if (ec) {
-    std::filesystem::remove(output_path, ec);
-    ec.clear();
-    std::filesystem::rename(temp_path, output_path, ec);
-    if (ec) {
-      set_error(error, "unable to atomically replace manifest output");
-      return false;
-    }
+    set_error(error, "unable to atomically replace manifest output");
+    return false;
   }
 
   return true;

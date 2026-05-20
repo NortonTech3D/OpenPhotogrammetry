@@ -100,7 +100,7 @@ Pipeline done criteria:
 
 A profile is valid only when required keys and values are present:
 
-- Required keys: `name`, `compute_backend_priority`, `max_parallel_jobs`, `image_cache_gb`, `dense_reconstruction_quality`, `fail_fast_quality_gates`, `sparse_matching_strategy`, `dense_confidence_filtering`, `qa_report_level`
+- Required keys: `name`, `compute_backend_priority`, `max_parallel_jobs`, `image_cache_gb`, `dense_reconstruction_quality`, `fail_fast_quality_gates`, `sparse_matching_strategy`, `dense_confidence_filtering`, `qa_report_level`, `runtime_budget_ms`
 - Allowed values:
   - `max_parallel_jobs`: `auto` | `max`
   - `dense_reconstruction_quality`: `balanced` | `high` | `ultra`
@@ -130,4 +130,3 @@ All resolved values must be auditable in run outputs.
   - `linux-debug`, `windows-debug`, `macos-debug`, `apple-silicon-debug`
 - Linux quality gate:
   - `linux-asan`
-

@@ -96,7 +96,7 @@ int main(int argc, char** argv) {
   options.max_retries = max_retries;
   options.fail_fast_quality_gates = profile.fail_fast_quality_gates;
   options.memory_budget_mb = static_cast<std::size_t>(profile.image_cache_gb) * 1024;
-  options.runtime_budget_ms = profile.name == "server" ? 900000 : 600000;
+  options.runtime_budget_ms = profile.runtime_budget_ms;
 
   const op::io::StageExecutionResult result = op::io::execute_reconstruction_stage_graph(
     options,

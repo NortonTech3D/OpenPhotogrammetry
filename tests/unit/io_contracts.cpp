@@ -56,7 +56,8 @@ int main() {
     "fail_fast_quality_gates": true,
     "sparse_matching_strategy": "adaptive",
     "dense_confidence_filtering": "enabled",
-    "qa_report_level": "standard"
+    "qa_report_level": "standard",
+    "runtime_budget_ms": 600000
   })json";
 
   if (!op::io::validate_profile_contract_json(desktop_json, &error)) {

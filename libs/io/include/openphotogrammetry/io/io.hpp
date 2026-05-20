@@ -104,6 +104,7 @@ struct ProfileContract {
   std::string sparse_matching_strategy;
   std::string dense_confidence_filtering;
   std::string qa_report_level;
+  int runtime_budget_ms{0};
   bool unified_memory_mode{false};
 };
 

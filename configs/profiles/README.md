@@ -15,6 +15,7 @@ Every profile JSON must define:
 - `sparse_matching_strategy` (`adaptive`, `exhaustive`, `sequential`)
 - `dense_confidence_filtering` (`disabled`, `enabled`, `aggressive`)
 - `qa_report_level` (`standard`, `detailed`, `forensic`)
+- `runtime_budget_ms` (positive integer stage runtime budget)
 
 Optional:
 
