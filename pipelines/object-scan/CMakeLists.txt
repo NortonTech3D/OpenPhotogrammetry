@@ -5,5 +5,6 @@ add_executable(op_pipeline_object_scan
 target_link_libraries(op_pipeline_object_scan
   PRIVATE
     OpenPhotogrammetry::camera
+    OpenPhotogrammetry::features
     OpenPhotogrammetry::meshing
 )

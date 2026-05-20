@@ -10,3 +10,4 @@ Current checks:
 - `integration.reconstruction_pipeline_self_check`
 - `integration.aerial_pipeline_self_check`
 - `integration.object_scan_pipeline_self_check`
+- `integration.object_scan_pipeline_live_scan_self_check`
