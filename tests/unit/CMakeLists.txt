@@ -43,3 +43,17 @@ foreach(lib_name IN ITEMS core io camera features sfm mvs meshing texturing geo)
     COMMAND op_unit_library_behavior ${lib_name}
   )
 endforeach()
+
+add_executable(op_unit_io_contracts
+  io_contracts.cpp
+)
+
+target_link_libraries(op_unit_io_contracts
+  PRIVATE
+    OpenPhotogrammetry::io
+)
+
+add_test(
+  NAME unit.io_contracts
+  COMMAND op_unit_io_contracts
+)
