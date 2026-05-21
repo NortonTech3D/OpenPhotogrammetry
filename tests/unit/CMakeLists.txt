@@ -57,3 +57,22 @@ add_test(
   NAME unit.io_contracts
   COMMAND op_unit_io_contracts
 )
+
+add_executable(op_unit_algorithm_core
+  algorithm_core.cpp
+)
+
+target_link_libraries(op_unit_algorithm_core
+  PRIVATE
+    OpenPhotogrammetry::core
+    OpenPhotogrammetry::camera
+    OpenPhotogrammetry::features
+    OpenPhotogrammetry::sfm
+    OpenPhotogrammetry::mvs
+    OpenPhotogrammetry::meshing
+)
+
+add_test(
+  NAME unit.algorithm_core
+  COMMAND op_unit_algorithm_core
+)
