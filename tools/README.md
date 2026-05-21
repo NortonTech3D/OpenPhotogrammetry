@@ -4,7 +4,7 @@ Runtime orchestration helpers for hardware-aware photogrammetry execution.
 
 ## Python pipeline utility
 
-`/home/runner/work/OpenPhotogrammetry/OpenPhotogrammetry/tools/openphotogrammetry_pipeline.py` implements:
+`tools/openphotogrammetry_pipeline.py` implements:
 
 - AMD driver inspection and Meshroom routing with optional ZLUDA fallback
 - OpenCLOn12 warning detection
@@ -25,6 +25,6 @@ Runtime orchestration helpers for hardware-aware photogrammetry execution.
 ### Quick examples
 
 ```bash
-python /home/runner/work/OpenPhotogrammetry/OpenPhotogrammetry/tools/openphotogrammetry_pipeline.py tune-patchmatch --vram-gb 10
-python /home/runner/work/OpenPhotogrammetry/OpenPhotogrammetry/tools/openphotogrammetry_pipeline.py route-meshroom -- --pipeline default.mg
+python tools/openphotogrammetry_pipeline.py tune-patchmatch --vram-gb 10
+python tools/openphotogrammetry_pipeline.py route-meshroom -- --pipeline default.mg
 ```
