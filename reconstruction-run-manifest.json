@@ -1,0 +1,117 @@
+{
+  "schema": "op-run-manifest-v1",
+  "run_id": "run-2b871b08fd19bdde",
+  "success": true,
+  "terminal_failure": "none",
+  "failed_stage": "",
+  "checkpoints": [
+    {
+      "stage": "intake",
+      "completed": true,
+      "attempts": 1,
+      "failure": "none",
+      "runtime_ms": 100,
+      "peak_memory_mb": 832,
+      "qa_metric": 1.000,
+      "artifact_uri": "artifacts/run-2b871b08fd19bdde/intake.json",
+      "artifact_checksum": "17166415142771904225",
+      "details": "dataset intake validated"
+    },
+    {
+      "stage": "quality_screening",
+      "completed": true,
+      "attempts": 1,
+      "failure": "none",
+      "runtime_ms": 100,
+      "peak_memory_mb": 832,
+      "qa_metric": 0.900,
+      "artifact_uri": "artifacts/run-2b871b08fd19bdde/quality_screening.json",
+      "artifact_checksum": "8339956729088595781",
+      "details": "quality screening passed"
+    },
+    {
+      "stage": "capture_adequacy",
+      "completed": true,
+      "attempts": 1,
+      "failure": "none",
+      "runtime_ms": 100,
+      "peak_memory_mb": 832,
+      "qa_metric": 0.880,
+      "artifact_uri": "artifacts/run-2b871b08fd19bdde/capture_adequacy.json",
+      "artifact_checksum": "12481068125942772495",
+      "details": "capture adequacy passed"
+    },
+    {
+      "stage": "sparse",
+      "completed": true,
+      "attempts": 1,
+      "failure": "none",
+      "runtime_ms": 100,
+      "peak_memory_mb": 832,
+      "qa_metric": 0.910,
+      "artifact_uri": "artifacts/run-2b871b08fd19bdde/sparse.json",
+      "artifact_checksum": "15455918085478247085",
+      "details": "sparse reconstruction complete"
+    },
+    {
+      "stage": "sparse_qa",
+      "completed": true,
+      "attempts": 1,
+      "failure": "none",
+      "runtime_ms": 100,
+      "peak_memory_mb": 832,
+      "qa_metric": 0.840,
+      "artifact_uri": "artifacts/run-2b871b08fd19bdde/sparse_qa.json",
+      "artifact_checksum": "11063340293138572966",
+      "details": "sparse QA passed"
+    },
+    {
+      "stage": "dense",
+      "completed": true,
+      "attempts": 1,
+      "failure": "none",
+      "runtime_ms": 100,
+      "peak_memory_mb": 832,
+      "qa_metric": 0.860,
+      "artifact_uri": "artifacts/run-2b871b08fd19bdde/dense.json",
+      "artifact_checksum": "18281851139168321674",
+      "details": "dense reconstruction complete"
+    },
+    {
+      "stage": "dense_qa",
+      "completed": true,
+      "attempts": 1,
+      "failure": "none",
+      "runtime_ms": 100,
+      "peak_memory_mb": 832,
+      "qa_metric": 0.820,
+      "artifact_uri": "artifacts/run-2b871b08fd19bdde/dense_qa.json",
+      "artifact_checksum": "2030736161532777751",
+      "details": "dense QA passed"
+    },
+    {
+      "stage": "meshing_texturing",
+      "completed": true,
+      "attempts": 1,
+      "failure": "none",
+      "runtime_ms": 100,
+      "peak_memory_mb": 832,
+      "qa_metric": 0.830,
+      "artifact_uri": "artifacts/run-2b871b08fd19bdde/meshing_texturing.json",
+      "artifact_checksum": "12342963199406763415",
+      "details": "meshing/texturing complete"
+    },
+    {
+      "stage": "packaging_export",
+      "completed": true,
+      "attempts": 1,
+      "failure": "none",
+      "runtime_ms": 100,
+      "peak_memory_mb": 832,
+      "qa_metric": 0.950,
+      "artifact_uri": "artifacts/run-2b871b08fd19bdde/packaging_export.json",
+      "artifact_checksum": "6049185070562004571",
+      "details": "packaging/export complete"
+    }
+  ]
+}
