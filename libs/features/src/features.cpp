@@ -257,7 +257,7 @@ std::vector<Keypoint> detect_keypoints(const GrayscaleImage& image, int max_feat
           if (dx == 0 && dy == 0) {
             continue;
           }
-          // Keep one response on flat peaks; strict '>' avoids suppressing ties.
+          // Strict '>' preserves one response when neighboring peak values tie.
           if (R[static_cast<std::size_t>(y + dy) * W + (x + dx)] > val) {
             is_max = false;
           }
@@ -414,6 +414,7 @@ std::vector<KeypointMatch> match_descriptors(const std::vector<Descriptor>& quer
     // Lowe's ratio test (always keep exact matches).
     const bool exact_match = (best_dist == 0);
     const bool ratio_pass =
+      // Guard against zero-valued second-best distance in the ratio test.
       (second_dist > 0)
       && (static_cast<float>(best_dist) < ratio_threshold * static_cast<float>(second_dist));
     if (best_idx >= 0 && (exact_match || ratio_pass)) {

@@ -112,6 +112,8 @@ bool mat3_inv(Mat3d m, Mat3d* out) {
 
 namespace {
 
+constexpr double kSvdOrthoTol = 1e-12;
+
 Vec3d mat3_col(Mat3d m, int c) {
   return {m(0, c), m(1, c), m(2, c)};
 }
@@ -126,7 +128,7 @@ Vec3d orthogonal_unit(Vec3d v) {
   const Vec3d axis_x{1.0, 0.0, 0.0};
   const Vec3d axis_y{0.0, 1.0, 0.0};
   Vec3d n = normalize(cross(v, axis_x));
-  if (norm(n) < 1e-12) {
+  if (norm(n) < kSvdOrthoTol) {
     n = normalize(cross(v, axis_y));
   }
   return n;
@@ -244,19 +246,19 @@ bool mat3_svd(Mat3d M, Mat3d* U_out, Vec3d* S_out, Mat3d* Vt_out) {
       U(r, c) = (sv_vals[c] > 1e-15) ? U(r, c) / sv_vals[c] : 0.0;
 
   // Re-orthonormalize U to handle rank-deficient inputs.
-  const bool has0 = sv_vals[0] > 1e-12;
-  const bool has1 = sv_vals[1] > 1e-12;
-  const bool has2 = sv_vals[2] > 1e-12;
+  const bool has0 = sv_vals[0] > kSvdOrthoTol;
+  const bool has1 = sv_vals[1] > kSvdOrthoTol;
+  const bool has2 = sv_vals[2] > kSvdOrthoTol;
   Vec3d u0 = has0 ? normalize(mat3_col(U, 0)) : Vec3d{1.0, 0.0, 0.0};
   Vec3d u1 = mat3_col(U, 1) - dot(u0, mat3_col(U, 1)) * u0;
-  if (!has1 || norm(u1) < 1e-12) {
+  if (!has1 || norm(u1) < kSvdOrthoTol) {
     u1 = orthogonal_unit(u0);
   }
   else {
     u1 = normalize(u1);
   }
   Vec3d u2 = mat3_col(U, 2) - dot(u0, mat3_col(U, 2)) * u0 - dot(u1, mat3_col(U, 2)) * u1;
-  if (!has2 || norm(u2) < 1e-12) {
+  if (!has2 || norm(u2) < kSvdOrthoTol) {
     u2 = cross(u0, u1);
   }
   else {
