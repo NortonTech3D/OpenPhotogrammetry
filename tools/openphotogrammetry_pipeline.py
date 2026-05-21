@@ -13,6 +13,12 @@ from typing import Any, Iterable
 
 
 MODERN_AMD_DRIVER = (23, 7, 1)
+PATCHMATCH_LOW_VRAM_IMAGE_SIZE = 2000
+PATCHMATCH_HIGH_VRAM_IMAGE_SIZE = 2400
+PATCHMATCH_VRAM_THRESHOLD_GB = 12.0
+PATCHMATCH_WINDOW_RADIUS = 4
+PATCHMATCH_NUM_ITERATIONS = 3
+PATCHMATCH_GEOM_CONSISTENCY = 1
 
 
 @dataclass(frozen=True)
@@ -130,12 +136,12 @@ def build_meshroom_launch_command(args: Iterable[str], env: dict[str, str] | Non
 
 
 def tune_patchmatch_options(vram_gb: float) -> dict[str, int]:
-    max_image_size = 2000 if vram_gb < 12 else 2400
+    max_image_size = PATCHMATCH_LOW_VRAM_IMAGE_SIZE if vram_gb < PATCHMATCH_VRAM_THRESHOLD_GB else PATCHMATCH_HIGH_VRAM_IMAGE_SIZE
     tuned = {
         "max_image_size": max_image_size,
-        "window_radius": 4,
-        "num_iterations": 3,
-        "geom_consistency": 1,
+        "window_radius": PATCHMATCH_WINDOW_RADIUS,
+        "num_iterations": PATCHMATCH_NUM_ITERATIONS,
+        "geom_consistency": PATCHMATCH_GEOM_CONSISTENCY,
     }
     _json_log("patchmatch.tuned", vram_gb=vram_gb, **tuned)
     return tuned
@@ -200,14 +206,14 @@ def _largest_spread_axis(centers: list[dict[str, Any]]) -> int:
 def partition_camera_clusters(
     camera_centers: list[dict[str, Any]],
     memory_limit_gb: float,
-    estimated_mb_per_camera: float = 180.0,
+    estimated_gb_per_camera: float = 0.18,
 ) -> list[list[dict[str, Any]]]:
     if memory_limit_gb <= 0:
         raise ValueError("memory_limit_gb must be > 0")
-    if estimated_mb_per_camera <= 0:
-        raise ValueError("estimated_mb_per_camera must be > 0")
+    if estimated_gb_per_camera <= 0:
+        raise ValueError("estimated_gb_per_camera must be > 0")
 
-    chunk_size = max(1, int(math.floor((memory_limit_gb * 1024.0) / estimated_mb_per_camera)))
+    chunk_size = max(1, int(math.floor(memory_limit_gb / estimated_gb_per_camera)))
     axis = _largest_spread_axis(camera_centers)
     ordered = sorted(camera_centers, key=lambda item: item["center"][axis])
 
@@ -227,11 +233,11 @@ def run_partitioned_stereo_fusion(
     workspace_path: str | Path,
     output_dir: str | Path,
     memory_limit_gb: float,
-    estimated_mb_per_camera: float = 180.0,
+    estimated_gb_per_camera: float = 0.18,
     colmap_bin: str | None = None,
 ) -> list[Path]:
     camera_centers = load_sparse_camera_centers(sparse_model_json)
-    clusters = partition_camera_clusters(camera_centers, memory_limit_gb, estimated_mb_per_camera)
+    clusters = partition_camera_clusters(camera_centers, memory_limit_gb, estimated_gb_per_camera)
 
     workspace = Path(workspace_path)
     out_root = Path(output_dir)
