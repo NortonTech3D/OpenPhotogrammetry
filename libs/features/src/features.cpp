@@ -257,7 +257,7 @@ std::vector<Keypoint> detect_keypoints(const GrayscaleImage& image, int max_feat
           if (dx == 0 && dy == 0) {
             continue;
           }
-          if (R[static_cast<std::size_t>(y + dy) * W + (x + dx)] >= val) {
+          if (R[static_cast<std::size_t>(y + dy) * W + (x + dx)] > val) {
             is_max = false;
           }
         }
