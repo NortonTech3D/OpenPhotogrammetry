@@ -19,6 +19,11 @@ add_test(
 )
 
 add_test(
+  NAME integration.reconstruction_pipeline_resume_self_check
+  COMMAND $<TARGET_FILE:op_pipeline_reconstruction> --resume-from sparse_qa --manifest-out reconstruction-run-manifest-resume.json
+)
+
+add_test(
   NAME integration.aerial_pipeline_self_check
   COMMAND $<TARGET_FILE:op_pipeline_aerial>
 )
