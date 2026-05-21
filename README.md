@@ -24,6 +24,7 @@ This repository now includes a base, modular file system layout designed for sca
 - Root build: `CMakeLists.txt`
 - Deterministic presets: `CMakePresets.json`
 - Apple Silicon toolchain and profile support included
+- Quick local validate: `cmake --workflow --preset host-debug`
 
 ## Dependency management
 

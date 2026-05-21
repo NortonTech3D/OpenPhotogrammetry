@@ -1,5 +1,13 @@
 # Build Overview
 
+## Quick start (recommended)
+
+Run configure, build, and test in one command on your current host:
+
+```bash
+cmake --workflow --preset host-debug
+```
+
 ## Local configure/build
 
 ```bash
