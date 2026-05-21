@@ -270,7 +270,7 @@ bool mat3_svd(Mat3d M, Mat3d* U_out, Vec3d* S_out, Mat3d* Vt_out) {
   if (mat3_det(U) < 0.0) {
     for (int r = 0; r < 3; ++r)
       U(r, 2) = -U(r, 2);
-    // Also fix Vt
+    // Also flip the paired right-singular vector to keep U*diag(S)*Vt unchanged.
     for (int c = 0; c < 3; ++c)
       Vt(2, c) = -Vt(2, c);
   }
