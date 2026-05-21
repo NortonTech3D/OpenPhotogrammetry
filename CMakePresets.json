@@ -16,6 +16,14 @@
       }
     },
     {
+      "name": "host-debug",
+      "inherits": "base",
+      "displayName": "Host Debug",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug"
+      }
+    },
+    {
       "name": "linux-debug",
       "inherits": "base",
       "displayName": "Linux Debug",
@@ -84,6 +92,10 @@
   ],
   "buildPresets": [
     {
+      "name": "host-debug",
+      "configurePreset": "host-debug"
+    },
+    {
       "name": "linux-debug",
       "configurePreset": "linux-debug"
     },
@@ -109,6 +121,13 @@
     }
   ],
   "testPresets": [
+    {
+      "name": "host-debug",
+      "configurePreset": "host-debug",
+      "output": {
+        "outputOnFailure": true
+      }
+    },
     {
       "name": "linux-debug",
       "configurePreset": "linux-debug",
@@ -150,6 +169,134 @@
       "output": {
         "outputOnFailure": true
       }
+    }
+  ],
+  "workflowPresets": [
+    {
+      "name": "host-debug",
+      "displayName": "Host Debug (configure, build, test)",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "host-debug"
+        },
+        {
+          "type": "build",
+          "name": "host-debug"
+        },
+        {
+          "type": "test",
+          "name": "host-debug"
+        }
+      ]
+    },
+    {
+      "name": "linux-debug",
+      "displayName": "Linux Debug (configure, build, test)",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "linux-debug"
+        },
+        {
+          "type": "build",
+          "name": "linux-debug"
+        },
+        {
+          "type": "test",
+          "name": "linux-debug"
+        }
+      ]
+    },
+    {
+      "name": "linux-asan",
+      "displayName": "Linux ASan/UBSan (configure, build, test)",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "linux-asan"
+        },
+        {
+          "type": "build",
+          "name": "linux-asan"
+        },
+        {
+          "type": "test",
+          "name": "linux-asan"
+        }
+      ]
+    },
+    {
+      "name": "windows-debug",
+      "displayName": "Windows Debug (configure, build, test)",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "windows-debug"
+        },
+        {
+          "type": "build",
+          "name": "windows-debug"
+        },
+        {
+          "type": "test",
+          "name": "windows-debug"
+        }
+      ]
+    },
+    {
+      "name": "macos-debug",
+      "displayName": "macOS Debug (configure, build, test)",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "macos-debug"
+        },
+        {
+          "type": "build",
+          "name": "macos-debug"
+        },
+        {
+          "type": "test",
+          "name": "macos-debug"
+        }
+      ]
+    },
+    {
+      "name": "apple-silicon-debug",
+      "displayName": "Apple Silicon Debug (configure, build, test)",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "apple-silicon-debug"
+        },
+        {
+          "type": "build",
+          "name": "apple-silicon-debug"
+        },
+        {
+          "type": "test",
+          "name": "apple-silicon-debug"
+        }
+      ]
+    },
+    {
+      "name": "apple-universal-debug",
+      "displayName": "Apple Universal Debug (configure, build, test)",
+      "steps": [
+        {
+          "type": "configure",
+          "name": "apple-universal-debug"
+        },
+        {
+          "type": "build",
+          "name": "apple-universal-debug"
+        },
+        {
+          "type": "test",
+          "name": "apple-universal-debug"
+        }
+      ]
     }
   ]
 }

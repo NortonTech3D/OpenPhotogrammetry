@@ -7,9 +7,7 @@ This runbook defines the baseline workflow for validating functional changes and
 Use CMake presets for reproducible local validation:
 
 ```bash
-cmake --preset linux-debug
-cmake --build --preset linux-debug
-ctest --preset linux-debug
+cmake --workflow --preset host-debug
 ```
 
 ## CI matrix expectations
