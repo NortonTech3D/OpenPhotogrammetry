@@ -37,7 +37,7 @@ Mat3d mat3_from_cols(Vec3d c0, Vec3d c1, Vec3d c2) {
   Mat3d m;
   m(0, 0) = c0.x;  m(0, 1) = c1.x;  m(0, 2) = c2.x;
   m(1, 0) = c0.y;  m(1, 1) = c1.y;  m(1, 2) = c2.y;
-  m(2, 0) = c0.z;  m(2, 1) = c2.z;  m(2, 2) = c2.z;
+  m(2, 0) = c0.z;  m(2, 1) = c1.z;  m(2, 2) = c2.z;
   return m;
 }
 
@@ -111,6 +111,26 @@ bool mat3_inv(Mat3d m, Mat3d* out) {
 // then U = M * V * diag(1/S).
 
 namespace {
+
+Vec3d mat3_col(Mat3d m, int c) {
+  return {m(0, c), m(1, c), m(2, c)};
+}
+
+void mat3_set_col(Mat3d* m, int c, Vec3d v) {
+  (*m)(0, c) = v.x;
+  (*m)(1, c) = v.y;
+  (*m)(2, c) = v.z;
+}
+
+Vec3d orthogonal_unit(Vec3d v) {
+  const Vec3d axis_x{1.0, 0.0, 0.0};
+  const Vec3d axis_y{0.0, 1.0, 0.0};
+  Vec3d n = normalize(cross(v, axis_x));
+  if (norm(n) < 1e-12) {
+    n = normalize(cross(v, axis_y));
+  }
+  return n;
+}
 
 // Apply a Jacobi rotation in the (p,q) plane to a symmetric 3×3 matrix A and
 // accumulate into V (right eigenvectors):
@@ -223,11 +243,33 @@ bool mat3_svd(Mat3d M, Mat3d* U_out, Vec3d* S_out, Mat3d* Vt_out) {
     for (int c = 0; c < 3; ++c)
       U(r, c) = (sv_vals[c] > 1e-15) ? U(r, c) / sv_vals[c] : 0.0;
 
+  // Re-orthonormalize U to handle rank-deficient inputs.
+  const bool has0 = sv_vals[0] > 1e-12;
+  const bool has1 = sv_vals[1] > 1e-12;
+  const bool has2 = sv_vals[2] > 1e-12;
+  Vec3d u0 = has0 ? normalize(mat3_col(U, 0)) : Vec3d{1.0, 0.0, 0.0};
+  Vec3d u1 = mat3_col(U, 1) - dot(u0, mat3_col(U, 1)) * u0;
+  if (!has1 || norm(u1) < 1e-12) {
+    u1 = orthogonal_unit(u0);
+  }
+  else {
+    u1 = normalize(u1);
+  }
+  Vec3d u2 = mat3_col(U, 2) - dot(u0, mat3_col(U, 2)) * u0 - dot(u1, mat3_col(U, 2)) * u1;
+  if (!has2 || norm(u2) < 1e-12) {
+    u2 = cross(u0, u1);
+  }
+  else {
+    u2 = normalize(u2);
+  }
+  mat3_set_col(&U, 0, u0);
+  mat3_set_col(&U, 1, u1);
+  mat3_set_col(&U, 2, u2);
+
   // Enforce det(U) == +1 (handle reflections)
   if (mat3_det(U) < 0.0) {
     for (int r = 0; r < 3; ++r)
       U(r, 2) = -U(r, 2);
-    S.z = -S.z;  // keep S positive by convention
     // Also fix Vt
     for (int c = 0; c < 3; ++c)
       Vt(2, c) = -Vt(2, c);
