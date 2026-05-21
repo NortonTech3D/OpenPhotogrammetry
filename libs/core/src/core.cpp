@@ -125,11 +125,21 @@ void mat3_set_col(Mat3d* m, int c, Vec3d v) {
 }
 
 Vec3d orthogonal_unit(Vec3d v) {
+  if (norm(v) < kSvdOrthoTol) {
+    return {1.0, 0.0, 0.0};
+  }
   const Vec3d axis_x{1.0, 0.0, 0.0};
   const Vec3d axis_y{0.0, 1.0, 0.0};
+  const Vec3d axis_z{0.0, 0.0, 1.0};
   Vec3d n = normalize(cross(v, axis_x));
   if (norm(n) < kSvdOrthoTol) {
     n = normalize(cross(v, axis_y));
+  }
+  if (norm(n) < kSvdOrthoTol) {
+    n = normalize(cross(v, axis_z));
+  }
+  if (norm(n) < kSvdOrthoTol) {
+    return {1.0, 0.0, 0.0};
   }
   return n;
 }
